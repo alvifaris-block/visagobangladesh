@@ -2223,14 +2223,24 @@ html[lang="en"] .row .en{display:none}
   }
   $$('.menu-btn').forEach(function(btn){
     var li=btn.parentNode;
+    var closeTimer=null;
     btn.addEventListener('click',function(){
+      window.clearTimeout(closeTimer);
       var open=!li.classList.contains('open');
       closeMenus(li);
       li.classList.toggle('open',open);
       btn.setAttribute('aria-expanded',String(open));
     });
+    li.addEventListener('mouseenter',function(){window.clearTimeout(closeTimer);});
     li.addEventListener('mouseleave',function(){
-      if(hoverMQ.matches){li.classList.remove('open');btn.setAttribute('aria-expanded','false');}
+      if(hoverMQ.matches){
+        window.clearTimeout(closeTimer);
+        li.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+        closeTimer=window.setTimeout(function(){
+          if(!li.matches(':hover')){li.classList.remove('open');btn.setAttribute('aria-expanded','false');}
+        },500);
+      }
     });
   });
   burger.addEventListener('click',function(){
